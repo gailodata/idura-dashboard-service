@@ -1,19 +1,24 @@
-import jwt, uuid, datetime
-from flask import Flask, render_template_string
-import os
+import streamlit as st
+import jwt
+import uuid
+import datetime
+import streamlit.components.v1 as components
 
-app = Flask(__name__)
+# Set page to wide mode for the big screen
+st.set_page_config(layout="wide")
 
-CLIENT_ID   = os.environ.get('TABLEAU_CLIENT_ID')
-SECRET_ID   = os.environ.get('TABLEAU_SECRET_ID')
-SECRET_VALUE = os.environ.get('TABLEAU_SECRET_VALUE')
-USER_EMAIL  = os.environ.get('TABLEAU_USER_EMAIL')
+# 1. Pull secrets from Streamlit's "Secrets" manager (we set this up in Step 4)
+CLIENT_ID = st.secrets["TABLEAU_CLIENT_ID"]
+SECRET_ID = st.secrets["TABLEAU_SECRET_ID"]
+SECRET_VALUE = st.secrets["TABLEAU_SECRET_VALUE"]
+USER_EMAIL = st.secrets["TABLEAU_USER_EMAIL"]
 
+# 2. Generate the Token
 def make_token():
     return jwt.encode(
         {
             "iss": CLIENT_ID,
-            "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=9),
+            "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=10),
             "jti": str(uuid.uuid4()),
             "aud": "tableau",
             "sub": USER_EMAIL,
@@ -24,53 +29,24 @@ def make_token():
         headers={"kid": SECRET_ID, "iss": CLIENT_ID}
     )
 
-@app.route("/")
-def index():
-    token = make_token()
-    return render_template_string(PAGE, token=token)
+token = make_token()
 
-PAGE = """
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        /* This makes the dashboard fill the entire browser screen */
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-            width: 100%;
-            overflow: hidden; 
-            background-color: #000; 
-        }
-        tableau-viz { 
-            width: 100vw; 
-            height: 100vh; 
-        }
-    </style>
-</head>
-<body>
-    <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
-    
-    <tableau-viz
-      id="tab-viz"
-      src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
-      token="{{ token }}"
-      toolbar="hidden"
-      device="desktop" 
-      hide-tabs>
-    </tableau-viz>
-
-    <script>
-        // Refresh the page every 60 minutes (3600000 ms)
-        // This forces Python to generate a brand new security token
-        setTimeout(function(){
-           window.location.reload();
-        }, 3600000); 
-    </script>
-</body>
-</html>
+# 3. The HTML for the big screen
+# Note the JS refresh script at the bottom to keep it "infinite"
+html_code = f"""
+<script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
+<tableau-viz 
+    id="tab-viz" 
+    src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
+    token="{token}" 
+    toolbar="hidden" 
+    device="desktop" 
+    style="width:100vw; height:95vh;">
+</tableau-viz>
+<script>
+    setTimeout(function(){{ window.location.reload(); }}, 1800000); 
+</script>
 """
 
-if __name__ == "__main__":
-    app.run(port=8080)
+# 4. Display it
+components.html(html_code, height=1000)
