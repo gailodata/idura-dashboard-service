@@ -2,7 +2,7 @@
 
 ---
 
-## Phase 1: The Tableau "Ingredients"
+## Phase 1: The Tableau 
 
 You need these 5 things from the Tableau Cloud interface to make the security handshake work.
 
@@ -16,9 +16,8 @@ You need these 5 things from the Tableau Cloud interface to make the security ha
 
 ---
 
-## Phase 2: Local Setup (Testing on your PC)
+## Phase 2: Local Setup 
 
-This is where we fix the URL name and test the code.
 
 ### 1. Create your folder
 
@@ -33,7 +32,6 @@ pyjwt
 ```
 
 **File 2: `app.py**`
-Use this version. I’ve fixed the **Source URL** logic for you.
 
 ```python
 import streamlit as st
@@ -106,7 +104,7 @@ Open your terminal in that folder and run:
 
 ---
 
-## Phase 3: The "Infinite" Big Screen Setup
+## Phase 3: The Web
 
 Once you see the dashboard working on `localhost`, it’s time to put it in the cloud so you can use it for the company.
 
