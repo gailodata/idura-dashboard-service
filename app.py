@@ -4,16 +4,17 @@ import uuid
 import datetime
 import streamlit.components.v1 as components
 
-# Set page to wide mode for the big screen
-st.set_page_config(layout="wide")
+# 1. Setup the Page (Wide mode for big screens)
+st.set_page_config(layout="wide", page_title="Idura Dashboard")
 
-# 1. Pull secrets from Streamlit's "Secrets" manager (we set this up in Step 4)
+# 2. Get your Secrets from the Streamlit "Vault"
+# We will set these up in the Streamlit Cloud Dashboard next
 CLIENT_ID = st.secrets["TABLEAU_CLIENT_ID"]
 SECRET_ID = st.secrets["TABLEAU_SECRET_ID"]
 SECRET_VALUE = st.secrets["TABLEAU_SECRET_VALUE"]
 USER_EMAIL = st.secrets["TABLEAU_USER_EMAIL"]
 
-# 2. Generate the Token
+# 3. Function to generate the Security Token
 def make_token():
     return jwt.encode(
         {
@@ -29,24 +30,32 @@ def make_token():
         headers={"kid": SECRET_ID, "iss": CLIENT_ID}
     )
 
+# 4. Create the Dashboard HTML
 token = make_token()
 
-# 3. The HTML for the big screen
-# Note the JS refresh script at the bottom to keep it "infinite"
 html_code = f"""
-<script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
-<tableau-viz 
-    id="tab-viz" 
-    src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
-    token="{token}" 
-    toolbar="hidden" 
-    device="desktop" 
-    style="width:100vw; height:95vh;">
-</tableau-viz>
-<script>
-    setTimeout(function(){{ window.location.reload(); }}, 1800000); 
-</script>
+<!DOCTYPE html>
+<html>
+<body style="margin:0; padding:0; background-color:black;">
+    <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
+    
+    <tableau-viz
+      id="tab-viz"
+      src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
+      token="{token}"
+      toolbar="hidden"
+      device="desktop" 
+      hide-tabs
+      style="width:100vw; height:98vh;">
+    </tableau-viz>
+
+    <script>
+        // Auto-refresh every 30 mins to get a fresh token
+        setTimeout(function(){{ window.location.reload(); }}, 1800000); 
+    </script>
+</body>
+</html>
 """
 
-# 4. Display it
+# 5. Render the dashboard
 components.html(html_code, height=1000)
