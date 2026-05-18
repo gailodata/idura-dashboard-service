@@ -66,9 +66,10 @@ html_code = f"""
   toolbar="hidden"
   device="desktop"
   hide-tabs
-  style="width:{round(100/cfg['scale'])}%; transform:scale({cfg['scale']}); transform-origin:top center; display:block; margin:0 auto;">
+  style="width:{round(100/cfg['scale'])}%; transform:scale({cfg['scale']}); transform-origin:top left; display:block; margin:0 auto;">
 </tableau-viz>
 <script>setTimeout(() => window.location.reload(), 480000);</script>
 """
 
+# Added use_container_width=True to ensure the iframe spans the entire width of the center container
 components.html(html_code, height=cfg["height"], scrolling=False)
