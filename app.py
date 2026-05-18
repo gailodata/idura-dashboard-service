@@ -35,18 +35,32 @@ token = make_token()
 
 html_code = f"""
 <!DOCTYPE html>
-<html>
-<body style="margin:0; padding:0; background-color:black;">
+<html style="margin: 0; padding: 0; width: 100%; height: 100%;">
+<head>
     <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
-    
+    <style>
+        html, body {{
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: transparent; /* Removes the harsh black background box */
+        }}
+        tableau-viz {{
+            width: 100% !important;
+            height: 100% !important;
+        }}
+    </style>
+</head>
+<body>
     <tableau-viz
       id="tab-viz"
       src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
       token="{token}"
       toolbar="hidden"
-      device="desktop" 
-      hide-tabs
-      style="width:100vw; height:98vh;">
+      device="default" 
+      hide-tabs>
     </tableau-viz>
 
     <script>
@@ -57,5 +71,6 @@ html_code = f"""
 </html>
 """
 
-# 5. Render the dashboard
-components.html(html_code, height=1000)
+# 5. Render the dashboard 
+# Setting use_container_width=True ensures Streamlit forces the iframe to match your "wide" layout width.
+components.html(html_code, height=900, scroller=False)
