@@ -4,17 +4,26 @@ import uuid
 import datetime
 import streamlit.components.v1 as components
 
-# 1. Setup the Page (Wide mode for big screens)
 st.set_page_config(layout="wide", page_title="Idura Dashboard")
 
-# 2. Get your Secrets from the Streamlit "Vault"
-# We will set these up in the Streamlit Cloud Dashboard next
+# Remove default Streamlit padding so the viz fills the whole page
+st.markdown("""
+    <style>
+        .stApp { overflow: hidden; }
+        #root > div:first-child { height: 100vh; }
+        .block-container {
+            padding: 0 !important;
+            margin: 0 !important;
+            max-width: 100% !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 CLIENT_ID = st.secrets["TABLEAU_CLIENT_ID"]
 SECRET_ID = st.secrets["TABLEAU_SECRET_ID"]
 SECRET_VALUE = st.secrets["TABLEAU_SECRET_VALUE"]
 USER_EMAIL = st.secrets["TABLEAU_USER_EMAIL"]
 
-# 3. Function to generate the Security Token
 def make_token():
     return jwt.encode(
         {
@@ -30,26 +39,27 @@ def make_token():
         headers={"kid": SECRET_ID, "iss": CLIENT_ID}
     )
 
-# 4. Create the Dashboard HTML
 token = make_token()
 
 html_code = f"""
 <!DOCTYPE html>
-<html style="margin: 0; padding: 0; width: 100%; height: 100%;">
+<html style="margin:0; padding:0; width:100%; height:100%;">
 <head>
     <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
     <style>
+        * {{ box-sizing: border-box; }}
         html, body {{
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: transparent; /* Removes the harsh black background box */
+            background: transparent;
         }}
         tableau-viz {{
-            width: 100% !important;
-            height: 100% !important;
+            display: block;
+            width: 100%;
+            height: 100%;
         }}
     </style>
 </head>
@@ -59,18 +69,27 @@ html_code = f"""
       src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
       token="{token}"
       toolbar="hidden"
-      device="default" 
+      device="default"
       hide-tabs>
     </tableau-viz>
-
     <script>
-        // Auto-refresh every 30 mins to get a fresh token
-        setTimeout(function(){{ window.location.reload(); }}, 1800000); 
+        // Resize the viz whenever the iframe itself resizes
+        function resizeViz() {{
+            const viz = document.getElementById('tab-viz');
+            if (viz) {{
+                viz.style.width  = window.innerWidth  + 'px';
+                viz.style.height = window.innerHeight + 'px';
+            }}
+        }}
+        window.addEventListener('resize', resizeViz);
+        resizeViz();
+
+        // Re-auth refresh every 30 mins
+        setTimeout(() => window.location.reload(), 1800000);
     </script>
 </body>
 </html>
 """
 
-# 5. Render the dashboard 
-# Setting use_container_width=True ensures Streamlit forces the iframe to match your "wide" layout width.
-components.html(html_code, height=900, scroller=False)
+# Use scrolling=False (correct param name) and a tall height as fallback
+components.html(html_code, height=900, scrolling=False)
