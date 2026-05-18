@@ -51,10 +51,18 @@ def make_token():
 
 token = make_token()
 
-# Replace your html_code with this:
+scaled_width = round(100 / cfg['scale'])
+offset = round((scaled_width - 100) / 2)  # how much it bleeds left
+
 html_code = f"""
-<div style="display:flex; justify-content:center; align-items:flex-start; width:100%; overflow:hidden;">
-  <div style="transform:scale({cfg['scale']}); transform-origin:top left; width:{round(100/cfg['scale'])}%;">
+<div style="width:100%; overflow:hidden;">
+  <div style="
+    width:{scaled_width}%;
+    transform:scale({cfg['scale']});
+    transform-origin:top center;
+    margin-left:-{offset}%;
+    margin-right:-{offset}%;
+  ">
     <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
     <tableau-viz
       src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
