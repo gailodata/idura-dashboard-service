@@ -38,7 +38,7 @@ def make_token():
     return jwt.encode(
         {
             "iss": CLIENT_ID,
-            "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=10),
+            "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=35),
             "jti": str(uuid.uuid4()),
             "aud": "tableau",
             "sub": USER_EMAIL,
