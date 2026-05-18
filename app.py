@@ -1,22 +1,26 @@
 import streamlit as st
-import jwt
-import uuid
-import datetime
+import jwt, uuid, datetime
 import streamlit.components.v1 as components
 
 st.set_page_config(layout="wide", page_title="Idura Dashboard")
+st.markdown("<style>.block-container{padding-top:0!important;}</style>", unsafe_allow_html=True)
 
-# Remove Streamlit's default top padding
-st.markdown("""
-    <style>
-        .block-container { padding-top: 0 !important; }
-    </style>
-""", unsafe_allow_html=True)
-
-CLIENT_ID = st.secrets["TABLEAU_CLIENT_ID"]
-SECRET_ID = st.secrets["TABLEAU_SECRET_ID"]
+CLIENT_ID    = st.secrets["TABLEAU_CLIENT_ID"]
+SECRET_ID    = st.secrets["TABLEAU_SECRET_ID"]
 SECRET_VALUE = st.secrets["TABLEAU_SECRET_VALUE"]
-USER_EMAIL = st.secrets["TABLEAU_USER_EMAIL"]
+USER_EMAIL   = st.secrets["TABLEAU_USER_EMAIL"]
+
+# ← Change this to: "phone", "ipad", "laptop13", "laptop15", "desktop"
+DEVICE = "laptop15"
+
+device_config = {
+    "phone":    {"scale": 0.45, "height": 580},
+    "ipad":     {"scale": 0.75, "height": 900},
+    "laptop13": {"scale": 0.60, "height": 680},
+    "laptop15": {"scale": 0.72, "height": 820},
+    "desktop":  {"scale": 1.00, "height": 980},
+}
+cfg = device_config[DEVICE]
 
 def make_token():
     return jwt.encode(
@@ -43,11 +47,9 @@ html_code = f"""
   toolbar="hidden"
   device="desktop"
   hide-tabs
-  style="width:100%; height:100vh;">
+  style="width:{round(100/cfg['scale'])}%; transform:scale({cfg['scale']}); transform-origin:top left; display:block;">
 </tableau-viz>
-<script>
-    setTimeout(() => window.location.reload(), 1800000);
-</script>
+<script>setTimeout(() => window.location.reload(), 1800000);</script>
 """
 
-components.html(html_code, height=1080, scrolling=False)
+components.html(html_code, height=cfg["height"], scrolling=False)
