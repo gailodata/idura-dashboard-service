@@ -38,7 +38,7 @@ def make_token():
     return jwt.encode(
         {
             "iss": CLIENT_ID,
-            "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=35),
+            "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=10),
             "jti": str(uuid.uuid4()),
             "aud": "tableau",
             "sub": USER_EMAIL,
@@ -61,7 +61,7 @@ html_code = f"""
   hide-tabs
   style="width:{round(100/cfg['scale'])}%; transform:scale({cfg['scale']}); transform-origin:top left; display:block;">
 </tableau-viz>
-<script>setTimeout(() => window.location.reload(), 1800000);</script>
+<script>setTimeout(() => window.location.reload(), 480000);</script>
 """
 
 components.html(html_code, height=cfg["height"], scrolling=False)
