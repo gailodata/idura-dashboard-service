@@ -3,14 +3,26 @@ import jwt, uuid, datetime
 import streamlit.components.v1 as components
 
 st.set_page_config(layout="wide", page_title="Idura Dashboard")
-st.markdown("<style>.block-container{padding-top:0!important;}</style>", unsafe_allow_html=True)
+
+# Hide the Streamlit header/toolbar and kill all padding
+st.markdown("""
+    <style>
+        #MainMenu, header, footer { display: none !important; }
+        .block-container {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .stApp > div:first-child {
+            margin-top: 0 !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 CLIENT_ID    = st.secrets["TABLEAU_CLIENT_ID"]
 SECRET_ID    = st.secrets["TABLEAU_SECRET_ID"]
 SECRET_VALUE = st.secrets["TABLEAU_SECRET_VALUE"]
 USER_EMAIL   = st.secrets["TABLEAU_USER_EMAIL"]
 
-# ← Change this to: "phone", "ipad", "laptop13", "laptop15", "desktop"
 DEVICE = "laptop15"
 
 device_config = {
