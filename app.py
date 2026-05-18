@@ -51,16 +51,21 @@ def make_token():
 
 token = make_token()
 
+# Replace your html_code with this:
 html_code = f"""
-<script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
-<tableau-viz
-  src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
-  token="{token}"
-  toolbar="hidden"
-  device="desktop"
-  hide-tabs
-  style="width:{round(100/cfg['scale'])}%; transform:scale({cfg['scale']}); transform-origin:top left; display:block;">
-</tableau-viz>
+<div style="display:flex; justify-content:center; align-items:flex-start; width:100%; overflow:hidden;">
+  <div style="transform:scale({cfg['scale']}); transform-origin:top left; width:{round(100/cfg['scale'])}%;">
+    <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
+    <tableau-viz
+      src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
+      token="{token}"
+      toolbar="hidden"
+      device="desktop"
+      hide-tabs
+      style="width:100%; display:block;">
+    </tableau-viz>
+  </div>
+</div>
 <script>setTimeout(() => window.location.reload(), 480000);</script>
 """
 
