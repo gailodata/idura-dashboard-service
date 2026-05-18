@@ -52,16 +52,14 @@ def make_token():
 token = make_token()
 
 scaled_width = round(100 / cfg['scale'])
-offset = round((scaled_width - 100) / 2)  # how much it bleeds left
 
 html_code = f"""
-<div style="width:100%; overflow:hidden;">
+<div style="width:100%; overflow:hidden; display:flex; justify-content:center;">
   <div style="
     width:{scaled_width}%;
+    flex-shrink:0;
     transform:scale({cfg['scale']});
     transform-origin:top center;
-    margin-left:-{offset}%;
-    margin-right:-{offset}%;
   ">
     <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
     <tableau-viz
