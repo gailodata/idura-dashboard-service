@@ -67,7 +67,7 @@ html_code = f"""
   device="desktop"
   hide-tabs
   style="width:{round(100/cfg['scale'])}%; 
-         transform:scale({cfg['scale']}) translateX(-15%); 
+         transform:scale({cfg['scale']}) translateX(-5%); 
          transform-origin:top left; 
          display:block;">
 </tableau-viz>
