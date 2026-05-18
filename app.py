@@ -10,10 +10,17 @@ st.markdown("""
         #MainMenu, header, footer { display: none !important; }
         .block-container {
             padding: 0 !important;
-            margin: 0 !important;
+            margin: 0 auto !important;
+            display: flex !important;
+            justify-content: center !important;
         }
         .stApp > div:first-child {
             margin-top: 0 !important;
+        }
+        /* Target the iframe Streamlit creates for components.html */
+        iframe {
+            display: block !important;
+            margin: 0 auto !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -51,27 +58,16 @@ def make_token():
 
 token = make_token()
 
-scaled_width = round(100 / cfg['scale'])
-
 html_code = f"""
-<div style="width:100%; overflow:hidden; display:flex; justify-content:center;">
-  <div style="
-    width:{scaled_width}%;
-    flex-shrink:0;
-    transform:scale({cfg['scale']});
-    transform-origin:top center;
-  ">
-    <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
-    <tableau-viz
-      src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
-      token="{token}"
-      toolbar="hidden"
-      device="desktop"
-      hide-tabs
-      style="width:100%; display:block;">
-    </tableau-viz>
-  </div>
-</div>
+<script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
+<tableau-viz
+  src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
+  token="{token}"
+  toolbar="hidden"
+  device="desktop"
+  hide-tabs
+  style="width:{round(100/cfg['scale'])}%; transform:scale({cfg['scale']}); transform-origin:top center; display:block; margin:0 auto;">
+</tableau-viz>
 <script>setTimeout(() => window.location.reload(), 480000);</script>
 """
 
