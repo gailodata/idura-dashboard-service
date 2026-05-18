@@ -1,5 +1,5 @@
 import streamlit as st
-import jwt, uuid, datetime
+import jwt, uuid, datetime, time
 import streamlit.components.v1 as components
 
 st.set_page_config(layout="wide", page_title="Idura Dashboard")
@@ -18,7 +18,6 @@ st.markdown("""
         .stApp > div:first-child {
             margin-top: 0 !important;
         }
-        /* Target the iframe Streamlit creates for components.html to make it full width */
         iframe {
             display: block !important;
             width: 100% !important;
@@ -33,7 +32,6 @@ SECRET_VALUE = st.secrets["TABLEAU_SECRET_VALUE"]
 USER_EMAIL   = st.secrets["TABLEAU_USER_EMAIL"]
 
 DEVICE = "laptop15"
-
 device_config = {
     "phone":    {"scale": 0.45, "height": 580},
     "ipad":     {"scale": 0.75, "height": 900},
@@ -58,11 +56,11 @@ def make_token():
         headers={"kid": SECRET_ID, "iss": CLIENT_ID}
     )
 
+# Generate a fresh token on every Streamlit re-run
 token = make_token()
 
 html_code = f"""
 <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
-
 <div style="width: 100%; display: flex; justify-content: center; overflow: visible;">
     <div style="width: {round(100/cfg['scale'])}%; transform: scale({cfg['scale']}); transform-origin: top center;">
         <tableau-viz
@@ -75,9 +73,11 @@ html_code = f"""
         </tableau-viz>
     </div>
 </div>
-
-<script>setTimeout(() => window.location.reload(), 480000);</script>
 """
 
-# Fixed: Removed the unsupported use_container_width parameter
 components.html(html_code, height=cfg["height"], scrolling=False)
+
+# Sleep for 8 minutes, then trigger a proper Streamlit re-run.
+# This ensures a fresh JWT is generated before the old one expires (10 min TTL).
+time.sleep(480)
+st.rerun()
