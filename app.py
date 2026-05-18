@@ -36,7 +36,7 @@ device_config = {
     "phone":    {"scale": 0.45, "height": 580},
     "ipad":     {"scale": 0.75, "height": 900},
     "laptop13": {"scale": 0.60, "height": 680},
-    "laptop15": {"scale": 0.90, "height": 980},  # bumped up from 0.72
+    "laptop15": {"scale": 0.72, "height": 820},
     "desktop":  {"scale": 1.00, "height": 980},
 }
 cfg = device_config[DEVICE]
@@ -66,7 +66,10 @@ html_code = f"""
   toolbar="hidden"
   device="desktop"
   hide-tabs
-  style="width:{round(100/cfg['scale'])}%; transform:scale({cfg['scale']}); transform-origin:top center; display:block; margin:0 auto;">
+  style="width:{round(100/cfg['scale'])}%; 
+         transform:scale({cfg['scale']}) translateX(-15%); 
+         transform-origin:top left; 
+         display:block;">
 </tableau-viz>
 <script>setTimeout(() => window.location.reload(), 480000);</script>
 """
