@@ -36,7 +36,7 @@ device_config = {
     "phone":    {"scale": 0.45, "height": 580},
     "ipad":     {"scale": 0.75, "height": 900},
     "laptop13": {"scale": 0.60, "height": 680},
-    "laptop15": {"scale": 0.72, "height": 820},
+    "laptop15": {"scale": 0.90, "height": 980},  # bumped up from 0.72
     "desktop":  {"scale": 1.00, "height": 980},
 }
 cfg = device_config[DEVICE]
