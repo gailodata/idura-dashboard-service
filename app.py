@@ -4,7 +4,7 @@ import streamlit.components.v1 as components
 
 st.set_page_config(layout="wide", page_title="Idura Dashboard")
 
-# Hide the Streamlit header/toolbar and kill all padding
+# Hide the Streamlit header/toolbar and force full width on the iframe
 st.markdown("""
     <style>
         #MainMenu, header, footer { display: none !important; }
@@ -13,13 +13,15 @@ st.markdown("""
             margin: 0 auto !important;
             display: flex !important;
             justify-content: center !important;
+            max-width: 100% !important;
         }
         .stApp > div:first-child {
             margin-top: 0 !important;
         }
-        /* Target the iframe Streamlit creates for components.html */
+        /* Force the Streamlit iframe component to span the full container width */
         iframe {
             display: block !important;
+            width: 100% !important;
             margin: 0 auto !important;
         }
     </style>
@@ -58,18 +60,25 @@ def make_token():
 
 token = make_token()
 
+# Wrapped the tableau-viz inside a flex container to handle centering flawlessly
 html_code = f"""
 <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
-<tableau-viz
-  src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
-  token="{token}"
-  toolbar="hidden"
-  device="desktop"
-  hide-tabs
-  style="width:{round(100/cfg['scale'])}%; transform:scale({cfg['scale']}); transform-origin:top left; display:block; margin:0 auto;">
-</tableau-viz>
+
+<div style="width: 100%; display: flex; justify-content: center; overflow: visible;">
+    <div style="width: {round(100/cfg['scale'])}%; transform: scale({cfg['scale']}); transform-origin: top center;">
+        <tableau-viz
+          src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
+          token="{token}"
+          toolbar="hidden"
+          device="desktop"
+          hide-tabs
+          style="width: 100%;">
+        </tableau-viz>
+    </div>
+</div>
+
 <script>setTimeout(() => window.location.reload(), 480000);</script>
 """
 
-# Added use_container_width=True to ensure the iframe spans the entire width of the center container
-components.html(html_code, height=cfg["height"], scrolling=False)
+# Added use_container_width=True to guarantee the iframe fills the full page width
+components.html(html_code, height=cfg["height"], scrolling=False, use_container_width=True)
