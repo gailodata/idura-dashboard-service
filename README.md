@@ -1,4 +1,5 @@
-# idura-dashboard-service
+# Idura Dashboard
+A dashboard to present Idura's key marketing metrics on the big screen.
 
 ---
 
