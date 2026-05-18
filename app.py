@@ -18,7 +18,7 @@ st.markdown("""
         .stApp > div:first-child {
             margin-top: 0 !important;
         }
-        /* Force the Streamlit iframe component to span the full container width */
+        /* Target the iframe Streamlit creates for components.html to make it full width */
         iframe {
             display: block !important;
             width: 100% !important;
@@ -60,7 +60,6 @@ def make_token():
 
 token = make_token()
 
-# Wrapped the tableau-viz inside a flex container to handle centering flawlessly
 html_code = f"""
 <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
 
@@ -80,5 +79,5 @@ html_code = f"""
 <script>setTimeout(() => window.location.reload(), 480000);</script>
 """
 
-# Added use_container_width=True to guarantee the iframe fills the full page width
-components.html(html_code, height=cfg["height"], scrolling=False, use_container_width=True)
+# Fixed: Removed the unsupported use_container_width parameter
+components.html(html_code, height=cfg["height"], scrolling=False)
