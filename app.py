@@ -6,16 +6,10 @@ import streamlit.components.v1 as components
 
 st.set_page_config(layout="wide", page_title="Idura Dashboard")
 
-# Remove default Streamlit padding so the viz fills the whole page
+# Remove Streamlit's default top padding
 st.markdown("""
     <style>
-        .stApp { overflow: hidden; }
-        #root > div:first-child { height: 100vh; }
-        .block-container {
-            padding: 0 !important;
-            margin: 0 !important;
-            max-width: 100% !important;
-        }
+        .block-container { padding-top: 0 !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -42,54 +36,18 @@ def make_token():
 token = make_token()
 
 html_code = f"""
-<!DOCTYPE html>
-<html style="margin:0; padding:0; width:100%; height:100%;">
-<head>
-    <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
-    <style>
-        * {{ box-sizing: border-box; }}
-        html, body {{
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: transparent;
-        }}
-        tableau-viz {{
-            display: block;
-            width: 100%;
-            height: 100%;
-        }}
-    </style>
-</head>
-<body>
-    <tableau-viz
-      id="tab-viz"
-      src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
-      token="{token}"
-      toolbar="hidden"
-      device="default"
-      hide-tabs>
-    </tableau-viz>
-    <script>
-        // Resize the viz whenever the iframe itself resizes
-        function resizeViz() {{
-            const viz = document.getElementById('tab-viz');
-            if (viz) {{
-                viz.style.width  = window.innerWidth  + 'px';
-                viz.style.height = window.innerHeight + 'px';
-            }}
-        }}
-        window.addEventListener('resize', resizeViz);
-        resizeViz();
-
-        // Re-auth refresh every 30 mins
-        setTimeout(() => window.location.reload(), 1800000);
-    </script>
-</body>
-</html>
+<script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
+<tableau-viz
+  src="https://dub01.online.tableau.com/t/ailo/views/MarComHowWereDoing/MarComHowWereDoing"
+  token="{token}"
+  toolbar="hidden"
+  device="desktop"
+  hide-tabs
+  style="width:100%; height:100vh;">
+</tableau-viz>
+<script>
+    setTimeout(() => window.location.reload(), 1800000);
+</script>
 """
 
-# Use scrolling=False (correct param name) and a tall height as fallback
-components.html(html_code, height=900, scrolling=False)
+components.html(html_code, height=1080, scrolling=False)
