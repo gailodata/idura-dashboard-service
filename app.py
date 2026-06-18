@@ -31,13 +31,15 @@ SECRET_ID    = st.secrets["TABLEAU_SECRET_ID"]
 SECRET_VALUE = st.secrets["TABLEAU_SECRET_VALUE"]
 USER_EMAIL   = st.secrets["TABLEAU_USER_EMAIL"]
 
-DEVICE = "laptop15"
+DEVICE = "1920x1080"  # Set the active device to your new config
+
 device_config = {
-    "phone":    {"scale": 0.45, "height": 580},
-    "ipad":     {"scale": 0.75, "height": 900},
-    "laptop13": {"scale": 0.60, "height": 680},
-    "laptop15": {"scale": 0.72, "height": 820},
-    "desktop":  {"scale": 1.00, "height": 980},
+    "phone":     {"scale": 0.45, "height": 580},
+    "ipad":      {"scale": 0.75, "height": 900},
+    "laptop13":  {"scale": 0.60, "height": 680},
+    "laptop15":  {"scale": 0.72, "height": 820},
+    "desktop":   {"scale": 1.00, "height": 980},
+    "1920x1080": {"scale": 1.00, "height": 950},  # New configuration for 1080p
 }
 cfg = device_config[DEVICE]
 
