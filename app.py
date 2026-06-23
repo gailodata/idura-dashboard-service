@@ -38,8 +38,8 @@ device_config = {
     "ipad":      {"scale": 0.75, "height": 900},
     "laptop13":  {"scale": 0.60, "height": 680},
     "laptop15":  {"scale": 0.72, "height": 820},
-    "desktop":   {"scale": 0.80, "height": 980},
-    "1920x1080": {"scale": 0.80, "height": 950},  # New configuration for 1080p
+    "desktop":   {"scale": 0.75, "height": 980},
+    "1920x1080": {"scale": 0.75, "height": 950},  # New configuration for 1080p
 }
 cfg = device_config[DEVICE]
 
