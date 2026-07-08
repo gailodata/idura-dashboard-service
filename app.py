@@ -26,6 +26,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# optional: only show dashboard during business hours
+# now = datetime.datetime.now()
+# if not (9 <= now.hour < 17) or now.weekday() >= 5:
+#     st.info("Available 9am-5pm, Mon-Fri.")
+#     st.stop()
+
 CLIENT_ID    = st.secrets["TABLEAU_CLIENT_ID"]
 SECRET_ID    = st.secrets["TABLEAU_SECRET_ID"]
 SECRET_VALUE = st.secrets["TABLEAU_SECRET_VALUE"]
@@ -61,7 +67,7 @@ def make_token():
 
 token = make_token()
 
-# embeds the viz, forces the TV browser to hard reload every 30 minutes to refresh the token and prevent sleep
+# embeds the viz once, refreshes on a timer but only if tab is visible (no point pinging extract if nobody's looking)
 html_code = f"""
 <script type="module" src="https://online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
 <div style="width: 100%; display: flex; justify-content: center; overflow: visible;">
@@ -79,13 +85,16 @@ html_code = f"""
 </div>
 
 <script>
-  const REFRESH_MS = 30 * 60 * 1000; // 30 min in milliseconds
+  const viz = document.getElementById('tvizEmbed');
+  const REFRESH_MS = 30 * 60 * 1000; // 30 min, source is an extract now so no rush
 
-  // Hard reload the parent Streamlit window every 30 minutes
-  setTimeout(() => {{
-      window.parent.location.reload();
+  setInterval(() => {{
+    if (document.visibilityState === 'visible') {{
+      viz.refreshDataAsync();
+    }}
   }}, REFRESH_MS);
 </script>
 """
 
 components.html(html_code, height=cfg["height"], scrolling=False)
+
